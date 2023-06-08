@@ -27,7 +27,7 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 
 def GPT_response(text):
     # 接收回應
-    response = openai.Completion.create(model="gpt-35-turbo", prompt=text, temperature=0.5, max_tokens=500)
+    response = openai.Completion.create(engine="gpt-35-turbo", prompt="如何經營line oa", temperature=1, max_tokens=100, top_p=0.5, frequency_penalty=0, presence_penalty=0, stop=None)
     print(response)
     # 重組回應
     answer = response['choices'][0]['text'].replace('。','')
