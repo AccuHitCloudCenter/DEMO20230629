@@ -1,80 +1,51 @@
+'''
+Author: Shawn
+Date: 2023-06-13 20:14:08
+LastEditors: Shawn
+LastEditTime: 2023-06-13 20:22:44
+FilePath: /CloudArchitectures/linebot_openai/app.py
+Description: 
+
+Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+'''
+from linebot import LineBotApi, WebhookHandler
+from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.exceptions import InvalidSignatureError
 from flask import Flask, request, abort
+from dotenv import load_dotenv
+import os
 
-from linebot import (
-    LineBotApi, WebhookHandler
-)
-from linebot.exceptions import (
-    InvalidSignatureError
-)
-from linebot.models import *
+# 加载 .env 文件中的环境变量
+load_dotenv()
 
-#======python的函數庫==========
-import tempfile, os
-import datetime
-import openai
-import time
-#======python的函數庫==========
+# 获取环境变量的值
+channel_access_token = os.getenv("CHANNEL_ACCESS_TOKEN")
+channel_secret = os.getenv("CHANNEL_SECRET")
+
+# 在 Line Developers 上获取的 Channel Access Token 和 Channel Secret
+line_bot_api = LineBotApi(channel_access_token)
+handler = WebhookHandler(channel_secret)
 
 app = Flask(__name__)
-static_tmp_path = os.path.join(os.path.dirname(__file__), 'static', 'tmp')
-# Channel Access Token
-line_bot_api = LineBotApi(os.getenv('CHANNEL_ACCESS_TOKEN'))
-# Channel Secret
-handler = WebhookHandler(os.getenv('CHANNEL_SECRET'))
-# OPENAI API Key初始化設定
-print("OPENAI_API_KEY", os.getenv('OPENAI_API_KEY'))
-openai.api_key = os.getenv('OPENAI_API_KEY')
 
-
-def GPT_response(text):
-    # 接收回應
-    response = openai.Completion.create(engine="gpt-35-turbo", prompt="如何經營line oa", temperature=1, max_tokens=100, top_p=0.5, frequency_penalty=0, presence_penalty=0, stop=None)
-    print(response)
-    # 重組回應
-    answer = response['choices'][0]['text'].replace('。','')
-    return answer
-
-
-# 監聽所有來自 /callback 的 Post Request
-@app.route("/callback", methods=['POST'])
+# 处理 Line 的 Webhook 请求
+@app.route("/callback", methods=["POST"])
 def callback():
-    # get X-Line-Signature header value
-    signature = request.headers['X-Line-Signature']
-    # get request body as text
+    # 获取请求的签名、负载和事件
+    signature = request.headers["X-Line-Signature"]
     body = request.get_data(as_text=True)
-    app.logger.info("Request body: " + body)
-    # handle webhook body
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-    return 'OK'
+    return "OK"
 
-
-# 處理訊息
+# 处理文本消息的函数
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    msg = event.message.text
-    GPT_answer = GPT_response(msg)
-    print(GPT_answer)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(GPT_answer))
+def handle_text_message(event):
+    text = event.message.text
+    reply_text = "你发送了：{}".format(text)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
 
-@handler.add(PostbackEvent)
-def handle_message(event):
-    print(event.postback.data)
-
-
-@handler.add(MemberJoinedEvent)
-def welcome(event):
-    uid = event.joined.members[0].user_id
-    gid = event.source.group_id
-    profile = line_bot_api.get_group_member_profile(gid, uid)
-    name = profile.display_name
-    message = TextSendMessage(text=f'{name}歡迎加入')
-    line_bot_api.reply_message(event.reply_token, message)
-        
-        
-import os
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
