@@ -57,9 +57,9 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     text = event.message.text
-    reply_text = "你发送了：{}".format(text)
-    # reply_text = call_openai(text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
+    # reply_text = "你发送了：{}".format(text)
+    reply_text = call_openai(text)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
 
 
 if __name__ == "__main__":
