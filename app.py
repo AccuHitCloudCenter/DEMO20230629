@@ -2,7 +2,7 @@
 Author: Shawn
 Date: 2023-06-13 20:14:08
 LastEditors: Shawn
-LastEditTime: 2023-06-14 15:44:21
+LastEditTime: 2023-06-14 15:58:43
 FilePath: /CloudArchitectures/linebot_openai/app.py
 Description: 
 
@@ -67,8 +67,8 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     text = event.message.text
-    # reply_text = "你发送了：{}".format(text)
-    reply_text = call_openai(text)
+    reply_text = "你发送了：{}".format(text)
+    # reply_text = call_openai(text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
 
 
