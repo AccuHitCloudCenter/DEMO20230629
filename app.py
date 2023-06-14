@@ -5,6 +5,8 @@ from flask import Flask, request, abort
 from dotenv import load_dotenv
 import os
 import openai
+from azure.ai.language.questionanswering import QuestionAnsweringClient
+from azure.core.credentials import AzureKeyCredential
 # 加载 .env 文件中的环境变量
 load_dotenv()
 
@@ -16,7 +18,33 @@ channel_secret = os.getenv("CHANNEL_SECRET")
 line_bot_api = LineBotApi(channel_access_token)
 handler = WebhookHandler(channel_secret)
 
+# 在 Azure Qesiton Answering 上獲取的 Endpoint 和 Key
+qa_endpoint = os.environ["AZURE_QUESTIONANSWERING_ENDPOINT"]
+qa_key = os.environ["AZURE_QUESTIONANSWERING_KEY"]
+
 app = Flask(__name__)
+
+
+def ask_a_question(question:str):
+    """ 
+    The only input required to ask a question using a knowledge base is just the question itself.
+    You can set additional keyword options to limit the number of answers, specify a minimum confidence score, and more.
+    """
+    
+    client = QuestionAnsweringClient(qa_endpoint, AzureKeyCredential(qa_key))
+
+    output = client.get_answers(
+        question=question,
+        project_name="test-exp-20230608",
+        deployment_name="production"
+    )
+    for candidate in output.answers:
+        if candidate.confidence>0.1:
+            return candidate.answer
+        else:
+            return "Sorry, I don't know the answer."
+        
+
 
 def call_openai(text):
     openai.api_type = "azure"
@@ -58,7 +86,9 @@ def callback():
 def handle_text_message(event):
     text = event.message.text
     # reply_text = "你发送了：{}".format(text)
-    reply_text = call_openai(text)
+    reply_text = ask_a_question(question=text)
+    if reply_text == "Sorry, I don't know the answer.":
+        reply_text = call_openai(text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
 
 
