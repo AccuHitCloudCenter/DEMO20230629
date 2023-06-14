@@ -1,13 +1,3 @@
-'''
-Author: Shawn
-Date: 2023-06-13 20:14:08
-LastEditors: Shawn
-LastEditTime: 2023-06-14 15:58:43
-FilePath: /CloudArchitectures/linebot_openai/app.py
-Description: 
-
-Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
-'''
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.exceptions import InvalidSignatureError
