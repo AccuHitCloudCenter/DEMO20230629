@@ -89,7 +89,7 @@ def handle_text_message(event):
     reply_text = ask_a_question(question=text)
     if reply_text == "Sorry, I don't know the answer.":
         reply_text = call_openai(text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
+    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=20)
 
 
 if __name__ == "__main__":
