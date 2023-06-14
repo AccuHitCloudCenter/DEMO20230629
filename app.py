@@ -81,15 +81,38 @@ def callback():
     return "OK"
 
 
-# 处理文本消息的函数
-@handler.add(MessageEvent, message=TextMessage)
+# # 处理文本消息的函数
+# @handler.add(MessageEvent, message=TextMessage)
+# def handle_text_message(event):
+#     text = event.message.text
+#     # reply_text = "你发送了：{}".format(text)
+#     reply_text = ask_a_question(question=text)
+#     if reply_text == "Sorry, I don't know the answer.":
+#         reply_text = call_openai(text)
+#     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
+
+import threading
+
 def handle_text_message(event):
-    text = event.message.text
-    # reply_text = "你发送了：{}".format(text)
-    reply_text = ask_a_question(question=text)
-    if reply_text == "Sorry, I don't know the answer.":
-        reply_text = call_openai(text)
-    line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
+    def ask_question_and_reply():
+        try:
+            reply_text = ask_a_question(question=event.message.text)
+            if reply_text == "Sorry, I don't know the answer.":
+                reply_text = call_openai(event.message.text)
+            line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
+        except Exception as e:
+            print(e)
+
+    # Start the API call in a new thread
+    api_call_thread = threading.Thread(target=ask_question_and_reply)
+    api_call_thread.start()
+
+    # Wait for 9 seconds
+    api_call_thread.join(timeout=9)
+
+    # If the API call thread is still alive after 9 seconds, reply with a timeout message
+    if api_call_thread.is_alive():
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請求超過時間"))
 
 
 if __name__ == "__main__":
