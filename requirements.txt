@@ -2,3 +2,5 @@ line-bot-sdk
 flask
 openai
 gunicorn
+python-dotenv
+azure-ai-language-questionanswering
