@@ -2,7 +2,7 @@
 Author: Shawn
 Date: 2023-06-15 17:02:38
 LastEditors: Shawn
-LastEditTime: 2023-06-16 11:32:13
+LastEditTime: 2023-06-16 13:54:36
 FilePath: /CloudArchitectures/linebot_openai/app.py
 Description: 
 
@@ -17,6 +17,7 @@ import os
 import openai
 from azure.ai.language.questionanswering import QuestionAnsweringClient
 from azure.core.credentials import AzureKeyCredential
+from modules.call_process import reply_message
 # 加载 .env 文件中的环境变量
 load_dotenv()
 
@@ -91,10 +92,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
     text = event.message.text
-    # reply_text = "你发送了：{}".format(text)
-    reply_text = ask_a_question(question=text)
-    if reply_text == "Sorry, I don't know the answer.":
-        reply_text = call_openai(text)
+    reply_text = reply_message(text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
 
 
