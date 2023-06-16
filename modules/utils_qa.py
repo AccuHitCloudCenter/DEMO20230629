@@ -1,3 +1,13 @@
+'''
+Author: Shawn
+Date: 2023-06-16 14:24:49
+LastEditors: Shawn
+LastEditTime: 2023-06-16 14:58:16
+FilePath: /CloudArchitectures/linebot_openai/modules/utils_qa.py
+Description: 
+
+Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+'''
 import asyncio
 import os
 from dotenv import load_dotenv
@@ -17,7 +27,7 @@ async def call_qa(question: str):
     result = await loop.run_in_executor(None, call_qa_sync, client, question)
     if result:
         max_confidence = max(result, key=lambda x: x[0])
-        if max_confidence[0] > 0.5:
+        if max_confidence[0] > 0.1:
             print(max_confidence[0])
             return max_confidence[1]
         else:
