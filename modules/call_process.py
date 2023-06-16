@@ -1,6 +1,6 @@
 import asyncio
-from linebot_openai.modules.utils_openai import call_openai
-from linebot_openai.modules.utils_qa import call_qa
+from modules.utils_openai import call_openai
+from modules.utils_qa import call_qa
 import random
 
 async def reply_message_sync(text):
