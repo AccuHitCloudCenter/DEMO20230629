@@ -1,3 +1,13 @@
+'''
+Author: Shawn
+Date: 2023-06-15 17:02:38
+LastEditors: Shawn
+LastEditTime: 2023-06-16 11:32:13
+FilePath: /CloudArchitectures/linebot_openai/app.py
+Description: 
+
+Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+'''
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from linebot.exceptions import InvalidSignatureError
@@ -65,9 +75,6 @@ def call_openai(text):
 
     return response['choices'][0]['message']['content']
 
-
-
-
 # 处理 Line 的 Webhook 请求
 @app.route("/callback", methods=["POST"])
 def callback():
@@ -80,7 +87,6 @@ def callback():
         abort(400)
     return "OK"
 
-
 # 处理文本消息的函数
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
@@ -90,29 +96,6 @@ def handle_text_message(event):
     if reply_text == "Sorry, I don't know the answer.":
         reply_text = call_openai(text)
     line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text), timeout=10)
-
-# import threading
-
-# def handle_text_message(event):
-#     def ask_question_and_reply():
-#         try:
-#             reply_text = ask_a_question(question=event.message.text)
-#             if reply_text == "Sorry, I don't know the answer.":
-#                 reply_text = call_openai(event.message.text)
-#             line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
-#         except Exception as e:
-#             print(e)
-
-#     # Start the API call in a new thread
-#     api_call_thread = threading.Thread(target=ask_question_and_reply)
-#     api_call_thread.start()
-
-#     # Wait for 9 seconds
-#     api_call_thread.join(timeout=9)
-
-#     # If the API call thread is still alive after 9 seconds, reply with a timeout message
-#     if api_call_thread.is_alive():
-#         line_bot_api.reply_message(event.reply_token, TextSendMessage(text="請求超過時間"))
 
 
 if __name__ == "__main__":
