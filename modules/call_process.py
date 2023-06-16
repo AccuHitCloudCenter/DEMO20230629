@@ -50,4 +50,4 @@ async def reply_message_sync(text):
     return random_answer
 
 def reply_message(text):
-    return asyncio.run(reply_message(text))
+    return asyncio.run(reply_message_sync(text))
