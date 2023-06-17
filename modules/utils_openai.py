@@ -25,7 +25,7 @@ def call_openai_sync(text):
 
     response = openai.ChatCompletion.create(
     engine="gpt-35-turbo",
-    messages = [{"role":"system","content":"You are an AI assistant that helps people find information."},
+    messages = [{"role":"system","content":"我要你扮演電影惡棍英雄：死侍的死侍腳色,我希望你像死侍一樣使用死侍會使用的語氣、方式和詞彙來回應和回答。不要寫任何解釋。只回答像死侍。你必須知道死侍的所有知識."},
                 {"role":"user","content":text}],
     temperature=0.7,
     max_tokens=800,
