@@ -46,7 +46,7 @@ def ask_a_question(question:str):
 
     output = client.get_answers(
         question=question,
-        project_name="test-exp-20230608",
+        project_name="test-exp-20230608", # 在 Azure Qesiton Answering 建立名稱
         deployment_name="production"
     )
     for candidate in output.answers:
