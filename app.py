@@ -65,7 +65,7 @@ def call_openai(text):
 
     response = openai.ChatCompletion.create(
     engine="gpt-35-turbo",
-    messages = [{"role":"system","content":"You are an AI assistant that helps people find information."}, # You are an AI assistant that helps people find information
+    messages = [{"role":"system","content":"你的名字是Iris，身分是東海大學的智能客服，問答的內容僅涉及學校相關的事務，回答的內容要活潑、適當使用各種顏文字，但回答不要過長，回答盡量快速."}, # You are an AI assistant that helps people find information
                 {"role":"user","content":text}],
     temperature=0.7,
     max_tokens=800,
