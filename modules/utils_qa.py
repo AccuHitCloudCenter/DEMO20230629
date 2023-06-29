@@ -34,12 +34,12 @@ async def call_qa(question: str):
             return ""
     else:
         return ""
-
+ 
 
 def call_qa_sync(client, question):
     output = client.get_answers(
         question=question,
-        project_name="test-exp-20230608",
+        project_name="demo20230621",
         deployment_name="production"
     )
 
