@@ -5,7 +5,7 @@ LastEditors: Shawn
 LastEditTime: 2023-06-16 13:55:57
 FilePath: /CloudArchitectures/linebot_openai/modules/utils_openai.py
 Description: 
-
+ 
 Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
 '''
 import asyncio
