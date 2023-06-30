@@ -11,7 +11,7 @@ Copyright (c) 2023 by ${git_name_email}, All Rights Reserved.
 import asyncio
 import openai
 import os 
-
+ 
 async def call_openai(question: str):
     loop = asyncio.get_event_loop()
     result = await loop.run_in_executor(None, call_openai_sync, question)
