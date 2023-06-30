@@ -1,3 +1,13 @@
+'''
+Author: Shawn
+Date: 2023-06-16 14:24:49
+LastEditors: Shawn
+LastEditTime: 2023-06-16 14:58:16
+FilePath: /CloudArchitectures/linebot_openai/modules/utils_qa.py
+Description: 
+
+Copyright (c) 2023 by ${git_name_email}, All Rights Reserved. 
+'''
 import asyncio
 import os
 from dotenv import load_dotenv
@@ -13,20 +23,8 @@ async def call_qa(question: str):
     key = os.environ["AZURE_QUESTIONANSWERING_KEY"]
     client = QuestionAnsweringClient(endpoint, AzureKeyCredential(key))
 
-    filters = {
-        "metadataFilter": {
-            "metadata": []
-        }
-    }
-
-    # 根據用戶的對話設定 metadata 過濾器
-    if "售前：" in question:
-        filters["metadataFilter"]["metadata"].append(("category", "pre_sales"))
-    elif "售後：" in question:
-        filters["metadataFilter"]["metadata"].append(("category", "after_sales"))
-  
     loop = asyncio.get_event_loop()
-    result = await loop.run_in_executor(None, call_qa_sync, client, question, filters)
+    result = await loop.run_in_executor(None, call_qa_sync, client, question)
     if result:
         max_confidence = max(result, key=lambda x: x[0])
         if max_confidence[0] > 0.1:
@@ -38,12 +36,11 @@ async def call_qa(question: str):
         return ""
  
 
-def call_qa_sync(client, question, filters):
+def call_qa_sync(client, question):
     output = client.get_answers(
         question=question,
         project_name="demo20230621",
-        deployment_name="production",
-        filters=filters
+        deployment_name="production"
     )
 
     results = []
