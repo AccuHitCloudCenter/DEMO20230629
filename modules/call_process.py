@@ -28,7 +28,7 @@ async def reply_message_sync(text):
             openai_task = asyncio.create_task(call_openai(text))
         
         # If total time has passed 9 seconds, break the loop
-        if (asyncio.get_event_loop().time() - start) >= 20:
+        if (asyncio.get_event_loop().time() - start) >= 60:
             break
 
         await asyncio.sleep(0.01)  # sleep for a bit before next iteration of the loop
