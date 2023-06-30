@@ -42,7 +42,7 @@ def call_qa_sync(client, question, filters):
     output = client.get_answers(
         question=question,
         project_name="demo20230621",
-        deployment_name="production"
+        deployment_name="production",
         filters=filters
     )
 
