@@ -25,7 +25,7 @@ def call_openai_sync(text):
 
     response = openai.ChatCompletion.create(
     engine="TEAMS",
-    messages = [{"role":"system","content":"你是愛酷智能的「Surface筆電」銷售助理，問答的內容僅涉及Surface筆電推薦，回答的內容要活潑、適當使用各種顏文字"},  #You are an AI assistant that helps people find information
+    messages = [{"role":"system","content":"你是愛酷智能的「Surface筆電」銷售助理，問答的內容僅涉及Surface筆電推薦，回答的內容要活潑、適當使用各種顏文字。僅銷售Surface Pro 9、Surface Go 3、Surface Laptop 5、Surface Laptop Studio、Surface Laptop Go 2、Surface Studio 2+，這六種款式。"},
                 {"role":"user","content":text}],
     temperature=0.7,
     max_tokens=800,
